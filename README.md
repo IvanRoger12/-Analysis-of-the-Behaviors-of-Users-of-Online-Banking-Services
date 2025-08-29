@@ -1,3 +1,50 @@
+## AI Agent (Minimal Python CLI)
+
+### Setup
+
+1. Create and activate a virtual environment (optional but recommended):
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Configure environment (copy and edit as needed):
+
+```bash
+cp .env.example .env
+```
+
+### Run
+
+Echo (no API keys needed):
+
+```bash
+python -m ai_agent --provider echo
+```
+
+OpenAI (requires `OPENAI_API_KEY`):
+
+```bash
+export OPENAI_API_KEY=YOUR_KEY
+python -m ai_agent --provider openai --model gpt-4o-mini
+```
+
+Ollama (requires local Ollama server):
+
+```bash
+python -m ai_agent --provider ollama --model llama3.1
+```
+
+### Notes
+
+- Default provider is `echo` if none specified.
+- You can set `AGENT_PROVIDER` and `AGENT_MODEL` in `.env`.
 # -Analysis-of-the-Behaviors-of-Users-of-Online-Banking-Services
 Project Overview
 This project aims to analyze user behavior in online banking services to provide personalized experiences, optimize operations, and anticipate trends. With the rapid digital transformation in the banking sector, understanding and adapting to user needs is crucial. This project leverages data science and machine learning to identify user habits, monitor real-time changes (data drift), and adjust services accordingly.
