@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI DataClean Pro - Agent IA de Nettoyage de Données</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Particules d'arrière-plan -->
+    <div id="particles-bg"></div>
+    
+    <!-- Overlay de chargement -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="cyber-loader"></div>
+            <div class="loading-text">AI DATACLEAN PRO</div>
+            <div class="loading-subtitle">Initialisation des algorithmes IA...</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span class="logo-text">AI DataClean <span class="pro">PRO</span></span>
+                <span class="version">v2.1</span>
+            </div>
+            <nav class="nav">
+                <button id="lang-toggle" class="lang-toggle">
+                    <span class="flag">🇫🇷</span>
+                    <span class="lang-text">FR</span>
+                </button>
+                <button class="demo-btn" id="demo-btn">
+                    <i class="fas fa-play"></i>
+                    <span data-i18n="demo">DÉMO</span>
+                </button>
+                <button class="premium-btn">
+                    <i class="fas fa-crown"></i>
+                    <span data-i18n="upgrade">UPGRADE VIP</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Section Upload -->
+            <section id="upload-section" class="section upload-section active">
+                <div class="section-header">
+                    <h1 class="title" data-i18n="main_title">Agent IA de Nettoyage de Données</h1>
+                    <p class="subtitle" data-i18n="main_subtitle">Nettoyage intelligent et automatisé de vos données avec IA avancée</p>
+                </div>
+
+                <div class="upload-container">
+                    <div class="upload-zone" id="upload-zone">
+                        <div class="upload-content">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3 data-i18n="upload_title">Glissez vos fichiers ici</h3>
+                            <p data-i18n="upload_subtitle">ou cliquez pour sélectionner</p>
+                            <div class="supported-formats">
+                                <span class="format">CSV</span>
+                                <span class="format">Excel</span>
+                                <span class="format">JSON</span>
+                                <span class="format">XML</span>
+                                <span class="format">TXT</span>
+                            </div>
+                            <div class="file-limit">
+                                <i class="fas fa-info-circle"></i>
+                                <span data-i18n="file_limit">Fichiers jusqu'à 50MB</span>
+                            </div>
+                        </div>
+                        <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.json,.xml,.txt" multiple>
+                    </div>
+
+                    <div class="sample-data">
+                        <h4 data-i18n="sample_data_title">Ou essayez avec nos données d'exemple :</h4>
+                        <div class="sample-buttons">
+                            <button class="sample-btn" data-sample="customers">
+                                <i class="fas fa-users"></i>
+                                <span data-i18n="sample_customers">Clients (5k lignes)</span>
+                            </button>
+                            <button class="sample-btn" data-sample="sales">
+                                <i class="fas fa-chart-line"></i>
+                                <span data-i18n="sample_sales">Ventes (10k lignes)</span>
+                            </button>
+                            <button class="sample-btn" data-sample="products">
+                                <i class="fas fa-box"></i>
+                                <span data-i18n="sample_products">Produits (2k lignes)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Preview -->
+            <section id="preview-section" class="section preview-section">
+                <div class="section-header">
+                    <h2 data-i18n="preview_title">Aperçu des Données</h2>
+                    <div class="section-actions">
+                        <button class="btn secondary" id="back-to-upload">
+                            <i class="fas fa-arrow-left"></i>
+                            <span data-i18n="back">Retour</span>
+                        </button>
+                        <button class="btn primary" id="start-cleaning">
+                            <i class="fas fa-magic"></i>
+                            <span data-i18n="start_cleaning">Lancer le Nettoyage IA</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="preview-container">
+                    <div class="file-info">
+                        <div class="file-details">
+                            <div class="detail">
+                                <span class="label" data-i18n="filename">Fichier :</span>
+                                <span class="value" id="file-name">-</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label" data-i18n="rows">Lignes :</span>
+                                <span class="value" id="total-rows">-</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label" data-i18n="columns">Colonnes :</span>
+                                <span class="value" id="total-columns">-</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label" data-i18n="size">Taille :</span>
+                                <span class="value" id="file-size">-</span>
+                            </div>
+                        </div>
+
+                        <div class="validation-status">
+                            <div class="status-item">
+                                <i class="fas fa-check-circle" id="format-status"></i>
+                                <span data-i18n="format_valid">Format valide</span>
+                            </div>
+                            <div class="status-item">
+                                <i class="fas fa-check-circle" id="structure-status"></i>
+                                <span data-i18n="structure_valid">Structure valide</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="columns-analysis">
+                        <h4 data-i18n="columns_analysis">Analyse des Colonnes</h4>
+                        <div id="columns-grid" class="columns-grid"></div>
+                    </div>
+
+                    <div class="data-preview">
+                        <div class="preview-header">
+                            <h4 data-i18n="data_preview">Aperçu des Données</h4>
+                            <div class="pagination-info">
+                                <span data-i18n="showing">Affichage de</span>
+                                <span id="rows-from">1</span>
+                                <span>-</span>
+                                <span id="rows-to">100</span>
+                                <span data-i18n="of">sur</span>
+                                <span id="total-rows-info">0</span>
+                                <span data-i18n="rows_label">lignes</span>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="preview-table" class="data-table">
+                                <thead id="table-header"></thead>
+                                <tbody id="table-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="pagination"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Processing -->
+            <section id="processing-section" class="section processing-section">
+                <div class="section-header">
+                    <h2 data-i18n="processing_title">Nettoyage IA en Cours</h2>
+                    <div class="live-badge">
+                        <span class="pulse"></span>
+                        <span data-i18n="live">LIVE</span>
+                    </div>
+                </div>
+
+                <div class="processing-container">
+                    <div class="ai-brain">
+                        <div class="brain-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="neural-network"></div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="overall-progress">
+                            <div class="progress-header">
+                                <span data-i18n="overall_progress">Progression Globale</span>
+                                <span class="progress-percent" id="overall-percent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="overall-progress"></div>
+                            </div>
+                        </div>
+
+                        <div class="steps-progress">
+                            <div class="step" id="step-1">
+                                <div class="step-icon"><i class="fas fa-search"></i></div>
+                                <div class="step-content">
+                                    <div class="step-title" data-i18n="step_analysis">Analyse des données</div>
+                                    <div class="step-status" data-i18n="pending">En attente...</div>
+                                </div>
+                                <div class="step-progress">
+                                    <div class="progress-bar mini">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step" id="step-2">
+                                <div class="step-icon"><i class="fas fa-broom"></i></div>
+                                <div class="step-content">
+                                    <div class="step-title" data-i18n="step_cleaning">Nettoyage intelligent</div>
+                                    <div class="step-status" data-i18n="pending">En attente...</div>
+                                </div>
+                                <div class="step-progress">
+                                    <div class="progress-bar mini">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step" id="step-3">
+                                <div class="step-icon"><i class="fas fa-chart-bar"></i></div>
+                                <div class="step-content">
+                                    <div class="step-title" data-i18n="step_insights">Génération insights</div>
+                                    <div class="step-status" data-i18n="pending">En attente...</div>
+                                </div>
+                                <div class="step-progress">
+                                    <div class="progress-bar mini">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step" id="step-4">
+                                <div class="step-icon"><i class="fas fa-check"></i></div>
+                                <div class="step-content">
+                                    <div class="step-title" data-i18n="step_complete">Finalisation</div>
+                                    <div class="step-status" data-i18n="pending">En attente...</div>
+                                </div>
+                                <div class="step-progress">
+                                    <div class="progress-bar mini">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="real-time-metrics">
+                        <div class="metric">
+                            <div class="metric-value" id="processed-rows">0</div>
+                            <div class="metric-label" data-i18n="processed_rows">Lignes traitées</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="duplicates-found">0</div>
+                            <div class="metric-label" data-i18n="duplicates_found">Doublons détectés</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="missing-filled">0</div>
+                            <div class="metric-label" data-i18n="missing_filled">Valeurs corrigées</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="anomalies-detected">0</div>
+                            <div class="metric-label" data-i18n="anomalies_detected">Anomalies détectées</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Dashboard -->
+            <section id="dashboard-section" class="section dashboard-section">
+                <div class="section-header">
+                    <h2 data-i18n="dashboard_title">Dashboard & Insights IA</h2>
+                    <div class="section-actions">
+                        <div class="status-badges">
+                            <span class="badge complete">
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="complete">COMPLET</span>
+                            </span>
+                            <span class="badge confidence" id="confidence-badge">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>CONFIANCE: <span id="confidence-score">97%</span></span>
+                            </span>
+                        </div>
+                        <button class="btn primary" id="export-btn">
+                            <i class="fas fa-download"></i>
+                            <span data-i18n="export">Exporter</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-container">
+                    <!-- KPIs principaux -->
+                    <div class="kpis-grid">
+                        <div class="kpi-card quality">
+                            <div class="kpi-header">
+                                <div class="kpi-icon"><i class="fas fa-star"></i></div>
+                                <div class="kpi-title" data-i18n="quality_score">Score Qualité</div>
+                            </div>
+                            <div class="kpi-value" id="quality-score">92</div>
+                            <div class="kpi-unit">%</div>
+                            <div class="kpi-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+18%</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card anomalies">
+                            <div class="kpi-header">
+                                <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div class="kpi-title" data-i18n="anomalies">Anomalies</div>
+                            </div>
+                            <div class="kpi-value" id="anomalies-count">147</div>
+                            <div class="kpi-unit" data-i18n="detected">détectées</div>
+                            <div class="kpi-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>-73%</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card records">
+                            <div class="kpi-header">
+                                <div class="kpi-icon"><i class="fas fa-database"></i></div>
+                                <div class="kpi-title" data-i18n="clean_records">Enregistrements</div>
+                            </div>
+                            <div class="kpi-value" id="clean-records">8,426</div>
+                            <div class="kpi-unit" data-i18n="clean">propres</div>
+                            <div class="kpi-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+94%</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card confidence">
+                            <div class="kpi-header">
+                                <div class="kpi-icon"><i class="fas fa-shield-alt"></i></div>
+                                <div class="kpi-title" data-i18n="confidence">Confiance</div>
+                            </div>
+                            <div class="kpi-value" id="confidence-kpi">97</div>
+                            <div class="kpi-unit">%</div>
+                            <div class="kpi-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphiques -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h4 data-i18n="data_quality_trend">Évolution Qualité des Données</h4>
+                                <div class="chart-controls">
+                                    <button class="chart-btn active" data-period="7d">7j</button>
+                                    <button class="chart-btn" data-period="30d">30j</button>
+                                    <button class="chart-btn" data-period="90d">90j</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="quality-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h4 data-i18n="issues_by_type">Problèmes par Type</h4>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="issues-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h4 data-i18n="cleaning_impact">Impact du Nettoyage</h4>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="impact-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h4 data-i18n="column_quality">Qualité par Colonne</h4>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="columns-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Insights IA -->
+                    <div class="insights-section">
+                        <h3 data-i18n="ai_insights_title">🧠 Insights IA Automatiques</h3>
+                        <div class="insights-grid" id="insights-grid">
+                            <!-- Les insights seront générés dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Chat IA -->
+            <section id="chat-section" class="section chat-section">
+                <div class="section-header">
+                    <h2 data-i18n="chat_title">💬 Chat IA Conversationnel</h2>
+                    <div class="chat-status">
+                        <span class="online-indicator"></span>
+                        <span data-i18n="ai_online">IA en ligne</span>
+                    </div>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai-message">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text" data-i18n="welcome_message">
+                                    Bonjour ! Je suis votre assistant IA spécialisé en nettoyage de données. 
+                                    Posez-moi des questions sur vos données ou demandez-moi des analyses spécifiques !
+                                </div>
+                                <div class="message-time">Il y a quelques instants</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="suggested-questions">
+                        <h4 data-i18n="suggested_questions">Questions suggérées :</h4>
+                        <div class="suggestions">
+                            <button class="suggestion-btn" data-question="quality_summary">
+                                <span data-i18n="q_quality">Résumé de la qualité des données</span>
+                            </button>
+                            <button class="suggestion-btn" data-question="main_issues">
+                                <span data-i18n="q_issues">Quels sont les principaux problèmes ?</span>
+                            </button>
+                            <button class="suggestion-btn" data-question="roi_calculation">
+                                <span data-i18n="q_roi">Calcul du ROI potentiel</span>
+                            </button>
+                            <button class="suggestion-btn" data-question="recommendations">
+                                <span data-i18n="q_recommendations">Recommandations d'amélioration</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <div class="typing-indicator" id="typing-indicator">
+                            <span data-i18n="ai_typing">L'IA est en train d'écrire</span>
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chat-input" placeholder="Posez votre question..." data-i18n-placeholder="chat_placeholder">
+                            <button id="send-btn" class="send-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Navigation latérale -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-brain"></i>
+            <span>AI DataClean</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item active" data-section="upload">
+                <i class="fas fa-upload"></i>
+                <span data-i18n="nav_upload">Upload</span>
+            </li>
+            <li class="menu-item" data-section="preview">
+                <i class="fas fa-eye"></i>
+                <span data-i18n="nav_preview">Aperçu</span>
+            </li>
+            <li class="menu-item" data-section="processing">
+                <i class="fas fa-cog"></i>
+                <span data-i18n="nav_processing">Traitement</span>
+            </li>
+            <li class="menu-item" data-section="dashboard">
+                <i class="fas fa-chart-pie"></i>
+                <span data-i18n="nav_dashboard">Dashboard</span>
+            </li>
+            <li class="menu-item" data-section="chat">
+                <i class="fas fa-comments"></i>
+                <span data-i18n="nav_chat">Chat IA</span>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <div class="premium-teaser">
+                <div class="premium-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="premium-text">
+                    <div class="premium-title">VIP Premium</div>
+                    <div class="premium-subtitle">Fonctionnalités avancées</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bouton pour ouvrir/fermer la sidebar -->
+    <button class="sidebar-toggle" id="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="translations.js"></script>
+    <script src="dataProcessor.js"></script>
+    <script src="aiEngine.js"></script>
+    <script src="chartManager.js"></script>
+    <script src="chatAI.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
